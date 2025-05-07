@@ -1,0 +1,189 @@
+/*///////////////////////////////////////////////////////////////////////////*/
+/* Estilos generales                                                         */
+/*///////////////////////////////////////////////////////////////////////////*/
+
+:root {
+    font-family: Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
+    line-height: 1.5;
+  
+    color-scheme: light dark;
+  
+    --primary-color: #1ABEE9;
+    --secondary-color: #E35C91;
+    --secondary-color-light: #eb79a1;
+    --background-color: #242424;
+    --card-background-color: #121212;
+    --font-color: rgba(255, 255, 255, 0.87);
+    --github-color: #333;
+    --github-color-light: #444;
+  }
+  
+  body {
+    margin: 0;
+    color: var(--font-color);
+    background-color: var(--background-color);
+  }
+  
+
+/*///////////////////////////////////////////////////////////////////////////*/
+/* Estilos del header                                                        */
+/*///////////////////////////////////////////////////////////////////////////*/
+
+.navBar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    height: 70px;
+    padding: 0 15px;
+}
+
+    .titleLink {
+        text-decoration: none;
+        color: var(--primary-color);
+        display: flex;
+        align-items: center;
+        width: 33%;
+        height: 100%;
+    }
+
+        .img {
+            height: 100%;
+        }
+
+        .title {
+            font-size: 2em
+        }
+
+            .italic {
+                color: var(--secondary-color);
+            }
+
+            
+/*///////////////////////////////////////////////////////////////////////////*/
+/* Estilos de home.handlebars                                                */
+/*///////////////////////////////////////////////////////////////////////////*/
+        
+.productsContainer {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 50px;
+    margin-top: 50px;
+}
+
+    .productCard {
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        text-align: center;
+        width: 250px;
+        border: 2px solid var(--secondary-color);
+        border-radius: 10px;
+        background-color: var(--card-background-color);
+        transition: background-color 0.5s ease;
+        box-shadow: 5px 5px 15px black;
+    }
+
+        .productCard:hover {
+            border: 2px solid var(--primary-color);
+            transition: border ease 0.5s;
+        }
+
+.navLinksContainer {
+    text-align: center;
+    margin: 50px;
+}
+
+    .navLink {
+        margin: 0 15px;
+        text-decoration: none;
+        color: var(--font-color);
+        font-weight: bold;
+        transition: color ease 0.5s;
+    }
+
+        .navLink:hover {
+            color: var(--primary-color);
+        }
+
+
+/*///////////////////////////////////////////////////////////////////////////*/
+/* Estilos de register.handlebars / login.handlebars                         */
+/*///////////////////////////////////////////////////////////////////////////*/
+
+form {
+    display: flex;
+    flex-direction: column;
+    margin: 0 35%;
+    max-width: 30%;
+}
+
+    label {
+        margin-top: 10px;
+    }
+
+    input, textarea, button {
+        margin: 5px 0;
+        padding: 10px;
+        font-size: 16px;
+        border: none;
+        outline: none;
+    }
+
+    button {
+        background-color: var(--secondary-color);
+        color: var(--font-color);
+        border: none;
+        cursor: pointer;
+        transition: background-color ease 0.3s;
+    }
+
+        button:hover {
+            background-color: var(--secondary-color-light);
+        }
+
+.divider {
+    width: 100%;
+    padding: 15px 0;
+    text-align: center;
+}
+
+
+/*///////////////////////////////////////////////////////////////////////////*/
+/* Estilos de GitHub                                                         */
+/*///////////////////////////////////////////////////////////////////////////*/
+
+.githubLogin {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin: 0 35%;
+    padding: 10px 20px;
+    gap: 15px;
+    font-size: 1rem;
+    font-weight: bold;
+    color: var(--font-color);
+    background-color: var(--github-color);
+    border: 2px solid var(--github-color);
+    border-radius: 5px;
+    text-decoration: none;
+    text-align: center;
+    transition: all 0.3s ease;
+}
+
+    .githubLogin:hover {
+        background-color: var(--github-color-light);
+        border-color: var(--github-color-light);
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        transform: scale(1.05);
+    }
+
+    .githubLogin:active {
+        transform: scale(0.95);
+    }
+
+        .githubLoginImg {
+            width: 25px;
+        }
+
+
