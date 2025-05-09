@@ -4,14 +4,15 @@ import session from "express-session"
 import MongoStore from "connect-mongo"
 import mongoose from "mongoose"
 import path from 'path'
-import { engine } from "express-handlebars"
 import passport from "passport"
 import cors from "cors"
+import { engine } from "express-handlebars"
 
 import initializePassport from "./config/passport.config.js"
 import __dirname from "./path.js"
 import indexRouter from "./routes/index.routes.js"
 import cookieParser from "cookie-parser"
+import { insertLog } from './utils/winston.js'
 
 
 // Inicialización de servidor express, asignación de puerto y ruta de BDD /////
@@ -24,6 +25,7 @@ app.use(express.json())
 app.use(express.urlencoded({extended:true}))
 app.use(cookieParser(process.env.SECRET_COOKIE))
 app.use(cors())
+app.use(insertLog)
 
 
 // Configuración de las sesiones vía Mongo Atlas (MongoStore) /////////////////

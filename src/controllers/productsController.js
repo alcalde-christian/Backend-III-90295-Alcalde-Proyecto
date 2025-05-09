@@ -10,12 +10,14 @@ export const getProducts = async (req, res) => {
         const sort = req.query.sort ? { price: req.query.sort === "asc" ? 1 : -1 } : undefined
 
         if (limit <= 0 || page <= 0) {
+            req.logger.warn("Función: getProducts | Los parámetros limit o page son inválidos")
             return res.status(400).render("templates/error", {error: "Los valores de limit y page deben ser mayores que 0"})
         }
 
         const products = await productModel.paginate(filter, { limit: limit, page: page, sort: sort, lean: true })
 
         if (products.docs.length === 0) {
+            req.logger.warn("Función: getProducts | No se encontraron productos según el filtro solicitado")
             return res.status(404).render("templates/error", {error: "No se encontraron productos que cumplan con el filtro solicitado"})
         }
 
@@ -26,11 +28,11 @@ export const getProducts = async (req, res) => {
         products.isValid = !(page <= 0 || page > products.totalPages)
 
         // console.log(products)
-        console.log("Es válido?", products.isValid)
-        console.log("Links,", products.nextLink, products.prevLink)
+        req.logger.info(`Función: getProducts | Es válido? ${products.isValid}`)
+        req.logger.info(`Función: getProducts | Links ${products.nextLink} & ${products.prevLink}`)
         res.status(200).render("templates/home", {products})
     } catch (error) {
-        console.log(error)
+        req.logger.error(`Función: getProducts | Error interno al obtener los productos de la base de datos: ${error}`)
         res.status(500).render("templates/error", {error})
     }
 }
@@ -45,15 +47,16 @@ export const getProduct = async (req, res) => {
 
         if (product) {
             res.status(200).render("templates/product", {product})
+            //         //
+            // Testing //
+            //         //
+            req.logger.info(`Función: getProduct | El producto consultado es: ${product}`)
         } else {
+            req.logger.warn("Función: getProduct | Producto no encontrado")
             return res.status(404).render("templates/error", {error: "Producto no encontrado"})
         }
-        //         //
-        // Testing //
-        //         //
-        console.log("\nFunción: getProduct\nEl producto consultado es:\n", product)
     } catch (error) {
-        console.log(error)
+        req.logger.error(`Función: getProduct | Error interno al obtener un producto de la base de datos: ${error}`)
         res.status(500).render("templates/error", {error})
     }
 }
@@ -66,19 +69,21 @@ export const addProduct = async (req, res) => {
         const { title, description, code, price, stock, category, thumbnail } = req.body
 
         if (!title || !description || !code || !price || !stock || !category) {
+            req.logger.warn("Función: addProduct | No se completaron todos los datos necesarios para agregar el producto")
             return res.status(400).render("templates/error", {error: "Alguno de los datos no ha sido completado"})
         }
 
         if (price <= 0 || stock <= 0) {
+            req.logger.warn("Función: addProduct | Valores de precio o stock inválidos")
             return res.status(400).render("templates/error", {error: "Precio o stock no válidos"})
         }
 
         const newProduct = await productModel.create({ title, description, code, price, stock, category, thumbnail })
 
-        console.log("Nuevo producto agregado:\n", newProduct)
+        req.logger.info(`Función: addProduct | Nuevo producto agregado: ${newProduct}`)
         res.status(201).redirect("templates/home")
     } catch (error) {
-        console.log(error)
+        req.logger.error(`Función: addProduct | Error interno al intentar agregar un producto a la base de datos: ${error}`)
         res.status(500).render("templates/error", {error})
     }
 }
@@ -93,12 +98,14 @@ export const updateProduct = async (req, res) => {
         const updatedProduct = await productModel.findByIdAndUpdate(productId, productToUpdate, { new:true })
 
         if (!updatedProduct) {
+            req.logger.warn("Función: updateProduct | Producto no encontrado")
             return res.status(404).render("templates/error", {error: "Producto no encontrado"})
         } else {
+            req.logger.info(`Función: updateProduct | El producto actualizado es: ${updatedProduct}`)
             res.status(200).render("templates/product", {updatedProduct})
         }
     } catch (error) {
-        console.log(error)
+        req.logger.error(`Función: updateProduct | Error interno al intentar actualizar la información de un producto: ${error}`)
         res.status(500).render("templates/error", {error})
     }
 }
@@ -112,12 +119,14 @@ export const deleteProduct = async (req, res) => {
         const deletedProduct = await productModel.findByIdAndDelete(productId)
 
         if (!deletedProduct) {
+            req.logger.warn("Función: deleteProduct | Producto no encontrado")
             return res.status(404).render("templates/error", {error: "Producto no encontrado"})
         } else {
+            req.logger.info(`Función: deleteProduct | El producto eliminado es: ${deletedProduct}`)
             res.status(200).redirect("templates/home")
         }
     } catch (error) {
-        console.log(error)
+        req.logger.error(`Función: deleteProduct | Error interno al intentar eliminar un producto de la base de datos: ${error}`)
         res.status(500).render("templates/error", {error})
     }
 }

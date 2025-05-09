@@ -8,20 +8,21 @@ import ticketModel from "../models/ticket.js"
 ///////////////////////////////////////////////////////////////////////////////
 export const getCart = async (req, res) => {
     try {
-        const cartId = new mongoose.Types.ObjectId(req.params.cid)
+        const cartId = req.params.cid
         const cart = await cartModel.findById(cartId)
 
         if (!cart) {
+            req.logger.warn("Función: getCart | Carrito no encontrado")
             return res.status(404).render("templates/error", {error: "Carrito no encontrado"})
         } else {
             res.status(200).render("templates/cart", {cart})
             //         //
             // Testing //
             //         //
-            console.log("\nFunción: getCart\nEl carrito consultado es:\n", cart)
+            req.logger.info(`Función: getCart | El carrito consultado es: ${cart}`)
         }
     } catch (error) {
-        console.log(error)
+        req.logger.error(`Función: getCart | Error interno al consultar carrito: ${error}`)
         res.status(500).render("templates/error", {error})
     }
 }
@@ -36,9 +37,9 @@ export const createCart = async (req, res) => {
         //         //
         // Testing //
         //         //
-        console.log("\nFunción: createCart\nEl carrito creado es:\n", newCart)
+        req.logger.info(`Función: createCart | El carrito creado es: ${newCart}`)
     } catch (error) {
-        console.log(error)
+        req.logger.error(`Función: createCart | Error interno al crear el carrito: ${error}`)
         res.status(500).render("templates/error", {error})
     }
 }
@@ -48,11 +49,12 @@ export const createCart = async (req, res) => {
 ///////////////////////////////////////////////////////////////////////////////
 export const addProductToCart = async (req, res) => {
     try {
-        const cartId = new mongoose.Types.ObjectId(req.params.cid)
-        const productId = new mongoose.Types.ObjectId(req.params.pid) 
+        const cartId = req.params.cid
+        const productId = req.params.pid
         const { quantity } = req.body
 
         if (!quantity || quantity <= 0) {
+            req.logger.warn("Función: addProductToCart | Cantidad inválida")
             return res.status(400).json({success: false, payload: "Cantidad inválida"})
         }
 
@@ -60,10 +62,12 @@ export const addProductToCart = async (req, res) => {
         const productToAdd = await productModel.findById(productId)
 
         if (!cartToUpdate) {
+            req.logger.warn("Función: addProductToCart | Carrito no encontrado")
             return res.status(404).json({success: false, payload: "Carrito no encontrado"})
         } 
 
         if (!productToAdd) {
+            req.logger.warn("Función: addProductToCart | Producto no encontrado")
             return res.status(404).json({success: false, payload: "Producto no encontrado"})
         }
 
@@ -81,9 +85,9 @@ export const addProductToCart = async (req, res) => {
         //         //
         // Testing //
         //         //
-        console.log("\nFunción: addProductToCart\nEl carrito actualizado es:\n", updatedCart)
+        req.logger.info(`Función: addProductToCart | El carrito actualizado es: ${updatedCart}`)
     } catch (error) {
-        console.log(error)
+        req.logger.error(`Función: addProductToCart | Error interno al agregar productos al carrito: ${error}`)
         res.status(500).render("templates/error", {error})
     }
 }
@@ -93,7 +97,7 @@ export const addProductToCart = async (req, res) => {
 ///////////////////////////////////////////////////////////////////////////////
 export const updateProducts = async (req, res) => {
     try {
-        const cartId = new mongoose.Types.ObjectId(req.params.cid)
+        const cartId = req.params.cid
         const { newProduct } = req.body
         const cartToUpdate = await cartModel.findById(cartId)
         cartToUpdate.products = newProduct
@@ -111,23 +115,26 @@ export const updateProducts = async (req, res) => {
 ///////////////////////////////////////////////////////////////////////////////
 export const updateProductQty = async (req, res) => {
     try {
-        const cartId = new mongoose.Types.ObjectId(req.params.cid)
-        const productId = new mongoose.Types.ObjectId(req.params.pid)
+        const cartId = req.params.cid
+        const productId = req.params.pid
         const { quantity } = req.body
 
         if (!quantity || quantity <= 0) {
+            req.logger.warn("Función: updateProductQty | Cantidad inválida")
             return res.status(400).json({success: false, payload: "Cantidad inválida"})
         }
 
         const cartToUpdate = await cartModel.findById(cartId)
 
         if (!cartToUpdate) {
+            req.logger.warn("Función: updateProductQty | Carrito no encontrado")
             return res.status(404).json({success: false, payload: "Carrito no encontrado"})
         } 
 
         const productIndex = cartToUpdate.products.findIndex(prod => prod.id_prod._id.toString() == productId)
 
         if (productIndex == -1) {
+            req.logger.warn("Función: updateProductQty | Producto no encontrado")
             return res.status(404).json({success: false, payload: "Producto no encontrado"})
         }
 
@@ -137,9 +144,9 @@ export const updateProductQty = async (req, res) => {
         //         //
         // Testing //
         //         //
-        console.log("\nFunción: updateProductQty\nEl carrito actualizado es:\n", cartToUpdate)
+        req.logger.info(`Función: updateProductQty | El carrito actualizado es: ${cartToUpdate}`)
     } catch (error) {
-        console.log(error)
+        req.logger.error(`Función: updateProductQty | Error interno al actualizar productos en carrito: ${error}`)
         res.status(500).render("templates/error", {error})
     }
 }
@@ -149,17 +156,19 @@ export const updateProductQty = async (req, res) => {
 ///////////////////////////////////////////////////////////////////////////////
 export const removeProduct = async (req, res) => {
     try {
-        const cartId = new mongoose.Types.ObjectId(req.params.cid)
-        const productId = new mongoose.Types.ObjectId(req.params.pid) 
+        const cartId = req.params.cid
+        const productId = req.params.pid
         const cartToUpdate = await cartModel.findById(cartId)
 
         if (!cartToUpdate) {
+            req.logger.warn("Función: removeProduct | Carrito no encontrado")
             return res.status(404).json({success: false, payload: "Carrito no encontrado"})
         } 
 
         const productIndex = cartToUpdate.products.findIndex(prod => prod.id_prod._id.toString() == productId)
 
         if (productIndex == -1) {
+            req.logger.warn("Función: removeProduct | Producto no encontrado")
             return res.status(404).json({success: false, payload: "Producto no encontrado"})
         }
 
@@ -169,9 +178,9 @@ export const removeProduct = async (req, res) => {
         //         //
         // Testing //
         //         //
-        console.log("\nFunción: removeProduct\nEl carrito actualizado es:\n", cartToUpdate)
+        req.logger.info(`Función: removeProduct | El carrito actualizado es: ${cartToUpdate}`)
     } catch (error) {
-        console.log(error)
+        req.logger.error(`Función: removeProduct | Error interno al remover productos del carrito: ${error}`)
         res.status(500).render("templates/error", {error})
     }
 }
@@ -181,10 +190,11 @@ export const removeProduct = async (req, res) => {
 ///////////////////////////////////////////////////////////////////////////////
 export const emptyCart = async (req, res) => {
     try {
-        const cartId = new mongoose.Types.ObjectId(req.params.cid)
+        const cartId = req.params.cid
         const cartToUpdate = await cartModel.findById(cartId)
 
         if (!cartToUpdate) {
+            req.logger.warn("Función: emptyCart | Carrito no encontrado")
             return res.status(404).json({success: false, payload: "Carrito no encontrado"})
         } 
 
@@ -194,9 +204,9 @@ export const emptyCart = async (req, res) => {
         //         //
         // Testing //
         //         //
-        console.log("\nFunción: emptyCart\nEl carrito actualizado es:\n", cartToUpdate)
+        req.logger.info(`Función: emptyCart | El carrito actualizado es: ${cartToUpdate}`)
     } catch (error) {
-        console.log(error)
+        req.logger.error(`Función: emptyCart | Error interno al intentar vaciar el carrito: ${error}`)
         res.status(500).render("templates/error", {error})
     }
 }
@@ -207,11 +217,12 @@ export const emptyCart = async (req, res) => {
 
 export const checkout = async (req, res) => {
     try {
-        const cartId = new mongoose.Types.ObjectId(req.params.cid)
+        const cartId = req.params.cid
         const cartToCheckout = await cartModel.findById(cartId)
         const stockInsufficient = []
 
         if (!cartToCheckout) {
+            req.logger.warn("Función: checkout | Carrito no encontrado")
             return res.status(404).json({success: false, payload: "Carrito no encontrado"})
         }
 
@@ -235,12 +246,13 @@ export const checkout = async (req, res) => {
             //         //
             // Testing //
             //         //
-            console.log("\nFunción: checkout\nLos productos sin stock son:\n", stockInsufficient)
-            console.log("\nFunción: checkout\nEl carrito quedó:\n", cartToCheckout)
+            req.logger.info(`Función: checkout | Los productos sin stock son: ${stockInsufficient}`)
+            req.logger.info(`Función: checkout | El carrito quedó: ${cartToCheckout}`)
             return res.status(409).json({success: false, payload: stockInsufficient})
         }
 
         if (cartToCheckout.products.length == 0) {
+            req.logger.warn("Función: checkout | El carrito se encuentra vacío")
             return res.status(400).json({success: false, payload: "No existen productos agregados al carrito"})
         }
 
@@ -268,10 +280,10 @@ export const checkout = async (req, res) => {
         //         //
         // Testing //
         //         //
-        console.log("\nFunción: checkout\nEl carrito a comprar es:\n", cartId)
-        console.log("\nFunción: checkout\nLa compra es:\n", newTicket)
+        req.logger.info(`Función: checkout | El carrito a comprar es: ${cartId}`)
+        req.logger.info(`Función: checkout | La compra es: ${newTicket}`)
     } catch (error) {
-        console.log(error)
+        req.logger.error(`Función: checkout | Error interno al intentar realizar el checkout: ${error}`)
         res.status(500).render("templates/error", {error})
     }
 }
