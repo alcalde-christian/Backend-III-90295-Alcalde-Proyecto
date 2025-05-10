@@ -1,0 +1,236 @@
+paths:
+  /api/products/:
+    get:
+      summary: Obtener todos los productos
+      tags:
+        - Products
+      parameters:
+        - name: limit
+          in: query
+          required: false
+          description: Productos a mostrar por página
+          schema:
+            type: integer
+        - name: page
+          in: query
+          required: false
+          description: Página a visualizar
+          schema:
+            type: integer
+        - name: category
+          in: query
+          required: false
+          description: Categoría de los productos
+          schema:
+            type: string
+        - name: sort
+          in: query
+          required: false
+          description: Orden de los productos (ascendente o descendente)
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Productos encontrados
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Product"
+        "400":
+          description: Los parámetros proporcionados (limit o page) son inválidos
+        "404":
+          description: No existen productos para mostrar con el filtro solicitado
+        "500":
+          description: Ocurrió un error interno en la base de datos
+    post:
+      summary: Agregar un nuevo producto
+      tags:
+        - Products
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/requestBodies/newOrUpdateProduct"
+      responses:
+        "201":
+          description: Producto agregado con éxito
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Product"
+        "400":
+          description: Alguno de los valores proporcionados es inválido
+        "401":
+          description: Sólo los usuarios autorizados pueden agregar productos a la base de datos
+        "500":
+          description: Ocurrió un error interno en la base de datos
+  /api/products/{pid}:
+    get:
+      summary: Obtener sólo un producto por ID 
+      tags:
+        - Products
+      parameters:
+        - name: pid
+          in: path
+          required: true
+          description: ID del producto
+          schema:
+            type: String
+      responses:
+        "200":
+          description: Producto encontrado
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Product"
+        "404":
+          description: No se encontraron productos con el ID proporcionado
+        "500":
+          description: Ocurrió un error interno en la base de datos
+    put:
+      summary: Actualizar un producto determinado
+      tags:
+        - Products
+      parameters:
+        - name: pid
+          in: path
+          required: true
+          description: ID del producto
+          schema:
+            type: String
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/requestBodies/newOrUpdateProduct"
+      responses:
+        "200":
+          description: Producto actualizado
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Product"
+        "401":
+          description: Sólo los usuarios autorizados pueden actualizar productos de la base de datos
+        "404":
+          description: No se encontró ningún producto con el ID proporcionado
+        "500":
+          description: Ocurrió un error interno en la base de datos
+    delete:
+      summary: Eliminar el producto indicado
+      tags:
+        - Products
+      parameters:
+        - name: pid
+          in: path
+          required: true
+          description: ID del producto
+          schema:
+            type: String
+      responses:
+        "200":
+          description: Producto eliminado
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Product"
+        "401":
+          description: Sólo los usuarios autorizados pueden eliminar productos de la base de datos
+        "404":
+          description: No se encontró ningún producto con el ID proporcionado
+        "500":
+          description: Ocurrió un error interno en la base de datos
+components:
+  schemas:
+    Product:
+      type: object
+      properties:
+        _id: 
+          type: ObjectId
+          description: ID de Mongo
+        title:
+          type: String
+          description: Nombre del producto
+        description:
+          type: String
+          description: Descripción del producto
+        price:
+          type: Number
+          description: Precio del producto
+        code: 
+          type: String
+          description: Código único de producto
+        stock:
+          type: Number
+          description: Stock del producto
+        status:
+          type: Boolean
+          description: Estado del producto
+        category:
+          type: String 
+          description: Categoría del producto
+        thumbnail:
+          type: Array
+          items:
+            type: String
+          description: URL de la imagen o foto del producto
+      example:
+        _id: ObjectId("6765b66de12ff2daafc511eZ")
+        title: iPhone 16 Pro Max
+        description: Lo último de Apple
+        price: 999999
+        code: IPH16PM
+        stock: 16
+        status: true
+        category: cellphones
+        thumbnail: []
+  requestBodies:
+    newOrUpdateProduct:
+      type: object
+      properties:
+        title:
+          type: String
+          description: Nombre del producto
+        description:
+          type: String
+          description: Descripción del producto
+        price:
+          type: Number
+          description: Precio del producto
+        code: 
+          type: String
+          description: Código único de producto
+        stock:
+          type: Number
+          description: Stock del producto
+        category:
+          type: String 
+          description: Categoría del producto
+        thumbnail:
+          type: Array
+          items:
+            type: String
+          description: URL de la imagen o foto del producto
+      required:
+        - title
+        - description
+        - price
+        - code
+        - stock
+        - category
+      example:
+        title: iPhone 16 Pro Max
+        description: Lo último de Apple
+        price: 999999
+        code: IPH16PM
+        stock: 16
+        category: cellphones
+        thumbnail: []
+
+
+
+
+
+

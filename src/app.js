@@ -6,6 +6,7 @@ import mongoose from "mongoose"
 import path from 'path'
 import passport from "passport"
 import cors from "cors"
+import swaggerUi from "swagger-ui-express"
 import { engine } from "express-handlebars"
 
 import initializePassport from "./config/passport.config.js"
@@ -13,6 +14,7 @@ import __dirname from "./path.js"
 import indexRouter from "./routes/index.routes.js"
 import cookieParser from "cookie-parser"
 import { insertLog } from './utils/winston.js'
+import { swaggerSpecs } from "./utils/swagger.js"
 
 
 // Inicialización de servidor express, asignación de puerto y ruta de BDD /////
@@ -26,6 +28,7 @@ app.use(express.urlencoded({extended:true}))
 app.use(cookieParser(process.env.SECRET_COOKIE))
 app.use(cors())
 app.use(insertLog)
+app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerSpecs))
 
 
 // Configuración de las sesiones vía Mongo Atlas (MongoStore) /////////////////
