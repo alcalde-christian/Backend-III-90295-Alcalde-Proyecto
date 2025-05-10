@@ -40,7 +40,7 @@ export const register = async (req, res) => {
             return res.status(400).render("templates/error", {error: "El correo electrónico ya se ha registrado"})
         } else {
             req.logger.info("Función: register | Usuario registrado correctamente")
-            res.status(201).redirect("/login")
+            res.status(200).redirect("/login")
         }
     } catch (error) {
         req.logger.error(`Función: register | Error interno al intentar registrar un usuario: ${error}`)

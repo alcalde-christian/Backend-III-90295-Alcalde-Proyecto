@@ -1,0 +1,137 @@
+paths:
+  /api/sessions/login:
+    post:
+      summary: Iniciar sesión de usuario
+      tags:
+        - Sessions
+      requestBody:
+        description: Inicio de sesión mediante e-mail y contraseña
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/requestBodies/LoginRequest"
+      responses:
+        "200":
+          description: Inicio de sesión exitoso, redirige a la página principal
+        "401":
+          description: Datos de inicio de sesión incorrectos
+        "500":
+          description: Error interno del servidor
+  /api/sessions/register:
+    post:
+      summary: Registro manual de nuevo usuario
+      tags:
+        - Sessions
+      requestBody:
+        description: Datos del usuario para registrarse
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/requestBodies/RegisterRequest"
+      responses:
+        "200":
+          description: Usuario registrado exitosamente, redirige al login
+        "400":
+          description: El correo electrónico ya está registrado
+        "500":
+          description: Error interno del servidor
+  /api/sessions/github:
+    get:
+      summary: Autenticación mediante cuenta de terceros (Github)
+      tags:
+        - Sessions
+      responses:
+        "302":
+          description: Redirige al proveedor de autenticación, GitHub
+  /api/sessions/githubcallback:
+    get:
+      summary: Maneja la respuesta de GitHub
+      tags:
+        - Sessions
+      responses:
+        "200":
+          description: Autenticación exitosa, redirige a la página principal
+        "400":
+          description: Algún dato ingresado es incorrecto
+        "500":
+          description: Error interno del servidor
+  /api/sessions/current:
+    get:
+      summary: Obtener información del usuario autenticado
+      tags:
+        - Sessions
+      security:
+        - bearerAuth: []
+      responses:
+        "200":
+          description: Devuelve los datos del usuario autenticado
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/User"
+        "401":
+          description: No autorizado
+        "500":
+          description: Error interno del servidor
+components:
+  schemas:
+    User:
+      type: object
+      properties:
+        firstName:
+          type: string
+          description: Nombre del usuario
+        email:
+          type: string
+          description: Correo electrónico del usuario
+        role:
+          type: string
+          description: Rol del usuario en el sistema
+      example:
+        firstName: Leo
+        email: almileo@google.com
+        role: user
+  requestBodies:
+    LoginRequest:
+      type: Object
+      properties:
+        email:
+          type: String
+          description: Correo electrónico del usuario
+        password:
+          type: String
+          description: Contraseña del usuario
+      example:
+        email: almileo@google.com
+        password: "1234"
+    RegisterRequest:
+      type: Object
+      properties:
+        firstName:
+          type: String
+          description: Nombre del usuario
+        lastName:
+          type: String
+          description: Apellido del usuario
+        email:
+          type: String
+          description: Correo electrónico del usuario
+        password:
+          type: String
+          description: Contraseña del usuario
+        age:
+          type: Number
+          description: Edad del usuario
+      example:
+        firstName: Leo
+        lastName: Almiron
+        email: almileo@google.com
+        password: "1234"
+        age: 34
+securitySchemes:
+  bearerAuth:
+    type: http
+    scheme: bearer
+    bearerFormat: JWT

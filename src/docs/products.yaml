@@ -41,7 +41,7 @@ paths:
         "404":
           description: No existen productos para mostrar con el filtro solicitado
         "500":
-          description: Ocurrió un error interno en la base de datos
+          description: Error interno del servidor
     post:
       summary: Agregar un nuevo producto
       tags:
@@ -64,7 +64,7 @@ paths:
         "401":
           description: Sólo los usuarios autorizados pueden agregar productos a la base de datos
         "500":
-          description: Ocurrió un error interno en la base de datos
+          description: Error interno del servidor
   /api/products/{pid}:
     get:
       summary: Obtener sólo un producto por ID 
@@ -87,7 +87,7 @@ paths:
         "404":
           description: No se encontraron productos con el ID proporcionado
         "500":
-          description: Ocurrió un error interno en la base de datos
+          description: Error interno del servidor
     put:
       summary: Actualizar un producto determinado
       tags:
@@ -117,7 +117,7 @@ paths:
         "404":
           description: No se encontró ningún producto con el ID proporcionado
         "500":
-          description: Ocurrió un error interno en la base de datos
+          description: Error interno del servidor
     delete:
       summary: Eliminar el producto indicado
       tags:
@@ -141,7 +141,7 @@ paths:
         "404":
           description: No se encontró ningún producto con el ID proporcionado
         "500":
-          description: Ocurrió un error interno en la base de datos
+          description: Error interno del servidor
 components:
   schemas:
     Product:
