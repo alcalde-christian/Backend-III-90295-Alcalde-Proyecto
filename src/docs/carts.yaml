@@ -1,0 +1,265 @@
+paths:
+  /api/carts/{cid}:
+    get:
+      summary: Obtener los productos de sólo un carrito mediante su ID
+      tags:
+        - Carts
+      parameters:
+        - name: cid
+          in: path
+          required: true
+          description: ID del carrito
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Carrito encontrado
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/CartResponse"
+        "404":
+          description: Carrito no encontrado
+        "500":
+          description: Error interno del servidor
+    delete:
+      summary: Vaciar el carrito indicado por ID
+      tags:
+        - Carts
+      parameters:
+        - name: cid
+          in: path
+          required: true
+          description: ID del carrito
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Carrito vaciado correctamente
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/CartResponse"
+        "404":
+          description: Carrito no encontrado
+        "500":
+          description: Error interno del servidor
+  /api/carts/:
+    post:
+      summary: Crear un carrito vacío
+      tags:
+        - Carts
+      responses:
+        "201":
+          description: Carrito creado correctamente
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/CartResponse"
+              example:
+                _id: 646efb4d25d6f300a89c1f97
+                products: []
+        "500":
+          description: Error interno del servidor
+  /api/carts/{cid}/product/{pid}:
+    post:
+      summary: Agregar un producto al carrito
+      tags:
+        - Carts
+      parameters:
+        - name: cid
+          in: path
+          required: true
+          description: ID del carrito
+          schema:
+            type: string
+        - name: pid
+          in: path
+          required: true
+          description: ID del producto a agregar
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/requestBodies/ProductQuantityRequest"
+      responses:
+        "200":
+          description: Producto agregado correctamente
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/CartResponse"
+        "400":
+          description: Cantidad a agregar inválida
+        "404":
+          description: Carrito o producto no encontrado
+        "500":
+          description: Error interno del servidor
+    put:
+      summary: Actualizar cantidad de un producto en el carrito
+      tags:
+        - Carts
+      parameters:
+        - name: cid
+          in: path
+          required: true
+          description: ID del carrito
+          schema:
+            type: string
+        - name: pid
+          in: path
+          required: true
+          description: ID del producto a agregar
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/requestBodies/ProductQuantityRequest"
+      responses:
+        "200":
+          description: Cantidad de producto actualizada correctamente
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/CartResponse"
+        "400":
+          description: Cantidad a agregar inválida
+        "404":
+          description: Carrito o producto no encontrado
+        "500":
+          description: Error interno del servidor
+    delete:
+      summary: Eliminar un producto del carrito
+      tags:
+        - Carts
+      parameters:
+        - name: cid
+          in: path
+          required: true
+          description: ID del carrito
+          schema:
+            type: string
+        - name: pid
+          in: path
+          required: true
+          description: ID del producto a agregar
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Producto eliminado correctamente
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/CartResponse"
+        "404":
+          description: Carrito o producto no encontrado
+        "500":
+          description: Error interno del servidor
+  /carts/{cid}/checkout:
+    post:
+      summary: Realizar el checkout del carrito, vaciar el carrito y discriminar productos con stock insuficiente
+      tags:
+        - Carts
+      parameters:
+        - name: cid
+          in: path
+          required: true
+          description: ID del carrito
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Compra realizada exitosamente
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/TicketResponse"
+        "400":
+          description: El carrito está vacío
+        "404":
+          description: Carrito no encontrado
+        "409":
+          description: Productos con stock insuficiente
+        "500":
+          description: Error interno del servidor
+components:
+  schemas:
+    CartResponse:
+      type: object
+      properties:
+        _id:
+          type: string
+          description: ID único del carrito
+        products:
+          type: array
+          description: Array de productos del carrito
+      example:
+        id: "646efb4d25d6f300a89c1f97"
+        products:
+          - _id: "1234567890abcdef12345678"
+            qty: 2
+          - _id: "abcdef1234567890abcdef12"
+            qty: 1
+    TicketResponse:
+      type: object
+      properties:
+        _id:
+          type: string
+          description: ID único del ticket generado por Mongo
+        code:
+          type: string
+          description: Código único del ticket
+        amount:
+          type: number
+          description: Monto total de la compra
+        purchaser:
+          type: string
+          description: E-mail del comprador
+        products:
+          type: array
+          description: Lista de productos comprados
+          items:
+            type: object
+            properties:
+              _id: 
+                type: string
+                description: ID generado por Mongo
+              id_prod:
+                type: string
+                description: ID único del producto
+              qty:
+                type: number
+                description: Cantidad del producto comprado
+        purchaseTime:
+          type: string
+          description: Fecha y hora de compra
+      example:
+        _id: 67be001b2918334f1ca29f8c
+        code: f34f79e1-64b3-4e3e-b11e-6a84d32d9df5
+        amount: 250000
+        purchaser: almileo@google.com
+        products:
+          _id: 67be00122918334f1ca29f81
+          id_prod: 6765b66de12ff2daafc511ea
+          qty: 2
+        purchaseTime: 2025-02-25T17:38:35.087+00:00
+  requestBodies:
+    ProductQuantityRequest:
+      type: object
+      properties:
+        id_prod:
+          type: string
+          description: ID único del producto a agregar
+        quantity:
+          type: number
+          description: Cantidad del producto a agregar o actualizar
+      example:
+        id_prod: 6765b66de12ff2daafc511ea
+        quantity: 5
