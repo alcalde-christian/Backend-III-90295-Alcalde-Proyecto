@@ -57,7 +57,7 @@ app.set('views', path.join(__dirname, 'views'))
 
 
 // Conexión con la base de datos //////////////////////////////////////////////
-const connectToMongoDB = async () => {
+export const connectToMongoDB = async () => {
     try {
         await mongoose.connect(process.env.DBPATH)
         console.log("Conectado a MongoDB")

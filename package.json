@@ -5,7 +5,10 @@
   "type": "module",
   "scripts": {
     "start": "node src/app.js",
-    "dev": "nodemon src/app.js"
+    "dev": "nodemon src/app.js",
+    "test:jwt": "mocha test/utils/jwt.test.js",
+    "test:bcrypt": "mocha test/utils/bcrypt.test.js",
+    "test:models": "mocha test/models/models.test.js"
   },
   "author": "Christian",
   "license": "ISC",
@@ -29,5 +32,9 @@
     "swagger-jsdoc": "^6.2.8",
     "swagger-ui-express": "^5.0.1",
     "winston": "^3.17.0"
+  },
+  "devDependencies": {
+    "chai": "^5.2.0",
+    "mocha": "^11.2.2"
   }
 }
