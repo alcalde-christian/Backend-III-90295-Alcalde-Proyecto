@@ -15,7 +15,8 @@ export const getCart = async (req, res) => {
             req.logger.warn("Función: getCart | Carrito no encontrado")
             return res.status(404).render("templates/error", {error: "Carrito no encontrado"})
         } else {
-            res.status(200).render("templates/cart", {cart})
+            res.status(200).json({ success: true, payload: cart})
+            // res.status(200).render("templates/cart", {cart})
             //         //
             // Testing //
             //         //

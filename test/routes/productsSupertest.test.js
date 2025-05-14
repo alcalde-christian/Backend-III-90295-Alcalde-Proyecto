@@ -19,7 +19,7 @@ describe("Supertest: product.routes.js", () => {
         const { statusCode, _body } = await requester.post("/api/products").send(testProduct)
 
         expect(statusCode).to.be.eq(201)
-        expect(_body.payload).to.have.property('_id')
+        expect(_body.payload).to.have.property("_id")
         testProductId = _body.payload._id
     })
 

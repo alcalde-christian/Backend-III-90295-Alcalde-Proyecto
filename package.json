@@ -9,7 +9,8 @@
     "test:jwt": "mocha test/utils/jwt.test.js",
     "test:bcrypt": "mocha test/utils/bcrypt.test.js",
     "test:models": "mocha test/models/models.test.js",
-    "supertest:products": "mocha test/routes/productsSupertest.test.js"
+    "supertest:products": "mocha test/routes/productsSupertest.test.js",
+    "supertest:carts": "mocha test/routes/cartsSupertest.test.js"
   },
   "author": "Christian",
   "license": "ISC",
