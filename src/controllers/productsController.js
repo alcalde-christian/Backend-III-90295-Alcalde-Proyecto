@@ -46,7 +46,8 @@ export const getProduct = async (req, res) => {
         const product = await productModel.findById(productId)
 
         if (product) {
-            res.status(200).render("templates/product", {product})
+            res.status(200).json({ success: true, payload: product })
+            // res.status(200).render("templates/product", {product})
             //         //
             // Testing //
             //         //
@@ -81,7 +82,8 @@ export const addProduct = async (req, res) => {
         const newProduct = await productModel.create({ title, description, code, price, stock, category, thumbnail })
 
         req.logger.info(`Función: addProduct | Nuevo producto agregado: ${newProduct}`)
-        res.status(201).redirect("templates/home")
+        // res.status(201).redirect("templates/home")
+        res.status(201).json({ success: true, payload: newProduct })
     } catch (error) {
         req.logger.error(`Función: addProduct | Error interno al intentar agregar un producto a la base de datos: ${error}`)
         res.status(500).render("templates/error", {error})
@@ -102,7 +104,8 @@ export const updateProduct = async (req, res) => {
             return res.status(404).render("templates/error", {error: "Producto no encontrado"})
         } else {
             req.logger.info(`Función: updateProduct | El producto actualizado es: ${updatedProduct}`)
-            res.status(200).render("templates/product", {updatedProduct})
+            res.status(200).json({ success: true, payload: updatedProduct })
+            // res.status(200).render("templates/product", {updatedProduct})
         }
     } catch (error) {
         req.logger.error(`Función: updateProduct | Error interno al intentar actualizar la información de un producto: ${error}`)
@@ -123,7 +126,8 @@ export const deleteProduct = async (req, res) => {
             return res.status(404).render("templates/error", {error: "Producto no encontrado"})
         } else {
             req.logger.info(`Función: deleteProduct | El producto eliminado es: ${deletedProduct}`)
-            res.status(200).redirect("templates/home")
+            res.status(200).json({ success: true, payload: deletedProduct })
+            // res.status(200).redirect("templates/home")
         }
     } catch (error) {
         req.logger.error(`Función: deleteProduct | Error interno al intentar eliminar un producto de la base de datos: ${error}`)

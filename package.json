@@ -8,7 +8,8 @@
     "dev": "nodemon src/app.js",
     "test:jwt": "mocha test/utils/jwt.test.js",
     "test:bcrypt": "mocha test/utils/bcrypt.test.js",
-    "test:models": "mocha test/models/models.test.js"
+    "test:models": "mocha test/models/models.test.js",
+    "supertest:products": "mocha test/routes/productsSupertest.test.js"
   },
   "author": "Christian",
   "license": "ISC",
@@ -35,6 +36,7 @@
   },
   "devDependencies": {
     "chai": "^5.2.0",
-    "mocha": "^11.2.2"
+    "mocha": "^11.2.2",
+    "supertest": "^7.1.1"
   }
 }
